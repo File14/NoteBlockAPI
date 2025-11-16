@@ -1,10 +1,6 @@
 package com.xxmicloxx.NoteBlockAPI;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitWorker;
-
-import java.util.List;
 
 public class NoteBlockAPI {
 
@@ -27,15 +23,6 @@ public class NoteBlockAPI {
 
     public void shutdown() {
         disabling = true;
-
-        Bukkit.getScheduler().cancelTasks(plugin);
-        List<BukkitWorker> workers = Bukkit.getScheduler().getActiveWorkers();
-        for (BukkitWorker worker : workers) {
-            if (!worker.getOwner().equals(this)) {
-                continue;
-            }
-            worker.getThread().interrupt();
-        }
     }
 
     public void doSync(Runnable runnable) {
@@ -44,12 +31,12 @@ public class NoteBlockAPI {
         }
     }
 
-    public Plugin getPlugin() {
-        return plugin;
-    }
-
     public static NoteBlockAPI getAPI() {
         return instance;
+    }
+
+    public Plugin getPlugin() {
+        return plugin;
     }
 
     public boolean isDisabling() {

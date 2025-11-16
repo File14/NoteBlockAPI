@@ -95,8 +95,6 @@ public abstract class SongPlayer {
             actualSong = rng.nextInt(playlist.getCount());
         }
         this.song = playlist.get(actualSong);
-
-        start();
     }
 
     /**
@@ -120,26 +118,6 @@ public abstract class SongPlayer {
     }
 
     /**
-     * Starts this SongPlayer
-     */
-    private void start() {
-        if (playing) {
-            return;
-        }
-        if (task != null) {
-            task.cancel();
-        }
-        // Calculate delay in ticks (1 tick = 50ms, so song.getDelay() * 50ms = song.getDelay() ticks)
-        long period = (long) song.getDelay();
-
-        task = plugin.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(plugin.getPlugin(),
-                this::tick,
-                0L,
-                period
-        );
-    }
-
-    /**
      * Tick function called by the scheduler
      */
     private void tick() {
@@ -154,7 +132,7 @@ public abstract class SongPlayer {
 
                         if (!playing) {
                             SongStoppedEvent event = new SongStoppedEvent(this);
-                            plugin.doSync(() -> Bukkit.getPluginManager().callEvent(event));
+                            plugin.doSync(() -> plugin.getPlugin().getServer().getPluginManager().callEvent(event));
                             volume = fadeIn.getFadeTarget();
                             return;
                         }
@@ -188,7 +166,7 @@ public abstract class SongPlayer {
 
                     if (repeat == RepeatMode.ONE) {
                         SongLoopEvent event = new SongLoopEvent(this);
-                        plugin.doSync(() -> Bukkit.getPluginManager().callEvent(event));
+                        plugin.doSync(() -> plugin.getPlugin().getServer().getPluginManager().callEvent(event));
 
                         if (!event.isCancelled()) {
                             return;
@@ -213,7 +191,7 @@ public abstract class SongPlayer {
 
                                 if (repeat == RepeatMode.ALL) {
                                     SongLoopEvent event = new SongLoopEvent(this);
-                                    plugin.doSync(() -> Bukkit.getPluginManager().callEvent(event));
+                                    plugin.doSync(() -> plugin.getPlugin().getServer().getPluginManager().callEvent(event));
 
                                     if (!event.isCancelled()) {
                                         return;
@@ -224,7 +202,7 @@ public abstract class SongPlayer {
                                 actualSong = playlist.getIndex(song);
 
                                 SongNextEvent event = new SongNextEvent(this);
-                                plugin.doSync(() -> Bukkit.getPluginManager().callEvent(event));
+                                plugin.doSync(() -> plugin.getPlugin().getServer().getPluginManager().callEvent(event));
                                 return;
                             }
                         } else {
@@ -233,7 +211,7 @@ public abstract class SongPlayer {
                                 song = playlist.get(actualSong);
 
                                 SongNextEvent event = new SongNextEvent(this);
-                                plugin.doSync(() -> Bukkit.getPluginManager().callEvent(event));
+                                plugin.doSync(() -> plugin.getPlugin().getServer().getPluginManager().callEvent(event));
                                 return;
                             } else {
                                 actualSong = 0;
@@ -241,7 +219,7 @@ public abstract class SongPlayer {
 
                                 if (repeat == RepeatMode.ALL) {
                                     SongLoopEvent event = new SongLoopEvent(this);
-                                    plugin.doSync(() -> Bukkit.getPluginManager().callEvent(event));
+                                    plugin.doSync(() -> plugin.getPlugin().getServer().getPluginManager().callEvent(event));
 
                                     if (!event.isCancelled()) {
                                         return;
@@ -252,7 +230,7 @@ public abstract class SongPlayer {
                     }
                     playing = false;
                     SongEndEvent event = new SongEndEvent(this);
-                    plugin.doSync(() -> Bukkit.getPluginManager().callEvent(event));
+                    plugin.doSync(() -> plugin.getPlugin().getServer().getPluginManager().callEvent(event));
 
                     if (autoDestroy) {
                         destroy();
@@ -264,7 +242,7 @@ public abstract class SongPlayer {
                 }
             }
         } catch (Exception e) {
-            Bukkit.getLogger().severe("An error occurred during the playback of song "
+            plugin.getPlugin().getServer().getLogger().severe("An error occurred during the playback of song "
                     + (song != null ?
                     song.getPath() + " (" + song.getAuthor() + " - " + song.getTitle() + ")"
                     : "null"));
@@ -395,6 +373,17 @@ public abstract class SongPlayer {
         if (this.playing == playing) {
             return;
         }
+        if (task != null) {
+            task.cancel();
+        }
+        // Calculate delay in ticks (1 tick = 50ms, so song.getDelay() * 50ms = song.getDelay() ticks)
+        long period = (long) song.getDelay();
+
+        task = plugin.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(plugin.getPlugin(),
+                this::tick,
+                0L,
+                period
+        );
         this.playing = playing;
 
         if (fade != null && fade.getType() != FadeType.NONE) {
@@ -457,8 +446,11 @@ public abstract class SongPlayer {
         fadeOut.setFadeStart(volume);
 
         if (fadeTemp != null) {
-            if (playing) fadeTemp.setFadeTarget(volume);
-            else fadeTemp.setFadeStart(volume);
+            if (playing) {
+                fadeTemp.setFadeTarget(volume);
+            } else {
+                fadeTemp.setFadeStart(volume);
+            }
         }
     }
 
