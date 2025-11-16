@@ -46,11 +46,11 @@ dependencies {
 You can initialize the api using:
 
 ```java
-NoteBlockAPI noteBlockAPI = NoteBlockAPI.initAPI(this);
+NoteBlockAPI noteBlockAPI = NoteBlockAPI.init(this);
 ```
 
 On plugin disable:
 
 ```java
-noteBlockAPI.shutdown();
+NoteBlockAPI.shutdown();
 ```
