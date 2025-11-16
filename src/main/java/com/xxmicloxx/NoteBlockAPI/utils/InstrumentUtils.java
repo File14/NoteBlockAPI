@@ -167,40 +167,29 @@ public class InstrumentUtils {
 				return Instrument.SNARE_DRUM;
 			case 4:
 				return Instrument.STICKS;
+            case 5:
+                return Instrument.GUITAR;
+            case 6:
+                return Instrument.FLUTE;
+            case 7:
+                return Instrument.BELL;
+            case 8:
+                return Instrument.CHIME;
+            case 9:
+                return Instrument.XYLOPHONE;
+            case 10:
+                return Instrument.IRON_XYLOPHONE;
+            case 11:
+                return Instrument.COW_BELL;
+            case 12:
+                return Instrument.DIDGERIDOO;
+            case 13:
+                return Instrument.BIT;
+            case 14:
+                return Instrument.BANJO;
+            case 15:
+                return Instrument.PLING;
 			default: {
-				if (CompatibilityUtils.getServerVersion() >= 0.0112f) {
-					switch (instrument) {
-						case 5:
-							return Instrument.valueOf("GUITAR");
-						case 6:
-							return Instrument.valueOf("FLUTE");
-						case 7:
-							return Instrument.valueOf("BELL");
-						case 8:
-							return Instrument.valueOf("CHIME");
-						case 9:
-							return Instrument.valueOf("XYLOPHONE");
-						default: {
-							if (CompatibilityUtils.getServerVersion() >= 0.0114f) {
-								switch (instrument) {
-									case 10:
-										return Instrument.valueOf("IRON_XYLOPHONE");
-									case 11:
-										return Instrument.valueOf("COW_BELL");
-									case 12:
-										return Instrument.valueOf("DIDGERIDOO");
-									case 13:
-										return Instrument.valueOf("BIT");
-									case 14:
-										return Instrument.valueOf("BANJO");
-									case 15:
-										return Instrument.valueOf("PLING");
-								}
-							}
-							return Instrument.PIANO;
-						}
-					}
-				}
 				return Instrument.PIANO;
 			}
 		}
@@ -221,13 +210,7 @@ public class InstrumentUtils {
 	 * @return index where an instrument can be added
 	 */
 	public static byte getCustomInstrumentFirstIndex() {
-		if (CompatibilityUtils.getServerVersion() >= 0.0114f) {
 			return 16;
-		}
-		if (CompatibilityUtils.getServerVersion() >= 0.0112f) {
-			return 10;
-		}
-		return 5;
 	}
 
 }

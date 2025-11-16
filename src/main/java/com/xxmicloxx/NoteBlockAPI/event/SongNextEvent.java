@@ -1,33 +1,32 @@
 package com.xxmicloxx.NoteBlockAPI.event;
 
+import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
-
 public class SongNextEvent extends Event {
 
-	private static final HandlerList handlers = new HandlerList();
-	private SongPlayer song;
+    private static final HandlerList handlers = new HandlerList();
+    private final SongPlayer song;
 
-	public SongNextEvent(SongPlayer song) {
-		this.song = song;
-	}
+    public SongNextEvent(SongPlayer song) {
+        this.song = song;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	/**
-	 * Returns SongPlayer which is going to play next song in playlist
-	 * @return SongPlayer
-	 */
-	public SongPlayer getSongPlayer() {
-		return song;
-	}
+    /**
+     * Returns SongPlayer which is going to play next song in playlist
+     *
+     * @return SongPlayer
+     */
+    public SongPlayer getSongPlayer() {
+        return song;
+    }
 
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-	
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

@@ -1,10 +1,14 @@
 package com.xxmicloxx.NoteBlockAPI.model.playmode;
 
-import com.xxmicloxx.NoteBlockAPI.model.*;
+import com.xxmicloxx.NoteBlockAPI.model.CustomInstrument;
+import com.xxmicloxx.NoteBlockAPI.model.Layer;
+import com.xxmicloxx.NoteBlockAPI.model.Note;
+import com.xxmicloxx.NoteBlockAPI.model.Song;
 import com.xxmicloxx.NoteBlockAPI.utils.CompatibilityUtils;
 import com.xxmicloxx.NoteBlockAPI.utils.InstrumentUtils;
 import com.xxmicloxx.NoteBlockAPI.utils.NoteUtils;
 import org.bukkit.Location;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 
 /**
@@ -16,46 +20,20 @@ public class StereoMode extends ChannelMode {
     private ChannelMode fallbackChannelMode = null;
 
     @Override
-    public void play(Player player, Location location, Song song, Layer layer, Note note, SoundCategory soundCategory, float volume, float pitch) {
-        if (!song.isStereo() && fallbackChannelMode != null){
-            fallbackChannelMode.play(player, location, song, layer, note, soundCategory, volume, pitch);
-            return;
-        }
-
-        float distance = 0;
-        if (layer.getPanning() == 100){
-            distance = ((note.getPanning() - 100) / 100f) * maxDistance;
-        } else {
-            distance = ((layer.getPanning() - 100 + note.getPanning() - 100) / 200f) * maxDistance;
-        }
-        if (InstrumentUtils.isCustomInstrument(note.getInstrument())) {
-            CustomInstrument instrument = song.getCustomInstruments()[note.getInstrument() - InstrumentUtils.getCustomInstrumentFirstIndex()];
-
-            if (instrument.getSound() != null) {
-                CompatibilityUtils.playSound(player, location, instrument.getSound(), soundCategory, volume, pitch, distance);
-            } else {
-                CompatibilityUtils.playSound(player, location, instrument.getSoundFileName(), soundCategory, volume, pitch, distance);
-            }
-        } else {
-            CompatibilityUtils.playSound(player, location, InstrumentUtils.getInstrument(note.getInstrument()), soundCategory, volume, pitch, distance);
-        }
-    }
-
-    @Override
     public void play(Player player, Location location, Song song, Layer layer, Note note, SoundCategory soundCategory, float volume, boolean doTranspose) {
-        if (!song.isStereo() && fallbackChannelMode != null){
+        if (!song.isStereo() && fallbackChannelMode != null) {
             fallbackChannelMode.play(player, location, song, layer, note, soundCategory, volume, doTranspose);
             return;
         }
 
         float pitch;
-        if(doTranspose)
+        if (doTranspose)
             pitch = NoteUtils.getPitchTransposed(note);
         else
             pitch = NoteUtils.getPitchInOctave(note);
 
         float distance = 0;
-        if (layer.getPanning() == 100){
+        if (layer.getPanning() == 100) {
             distance = ((note.getPanning() - 100) / 100f) * maxDistance;
         } else {
             distance = ((layer.getPanning() - 100 + note.getPanning() - 100) / 200f) * maxDistance;
@@ -63,7 +41,7 @@ public class StereoMode extends ChannelMode {
         if (InstrumentUtils.isCustomInstrument(note.getInstrument())) {
             CustomInstrument instrument = song.getCustomInstruments()[note.getInstrument() - InstrumentUtils.getCustomInstrumentFirstIndex()];
 
-            if (!doTranspose){
+            if (!doTranspose) {
                 CompatibilityUtils.playSound(player, location, InstrumentUtils.warpNameOutOfRange(instrument.getSoundFileName(), note.getKey(), note.getPitch()), soundCategory, volume, pitch, distance);
             } else {
                 if (instrument.getSound() != null) {
@@ -83,6 +61,7 @@ public class StereoMode extends ChannelMode {
 
     /**
      * Returns scale of panning in blocks. {@link Note} with maximum left panning will be played this distance from {@link Player}'s head on left side.
+     *
      * @return
      */
     public float getMaxDistance() {
@@ -91,6 +70,7 @@ public class StereoMode extends ChannelMode {
 
     /**
      * Sets scale of panning in blocks. {@link Note} with maximum left panning will be played this distance from {@link Player}'s head on left side.
+     *
      * @param maxDistance
      */
     public void setMaxDistance(float maxDistance) {
@@ -99,6 +79,7 @@ public class StereoMode extends ChannelMode {
 
     /**
      * Returns fallback {@link ChannelMode} used when song is not stereo.
+     *
      * @return ChannelMode or null when fallback ChannelMode is disabled
      */
     public ChannelMode getFallbackChannelMode() {
@@ -107,11 +88,13 @@ public class StereoMode extends ChannelMode {
 
     /**
      * Sets fallback {@link ChannelMode} which is used when song is not stereo. Set to null to disable.
+     *
      * @param fallbackChannelMode
      * @throws IllegalArgumentException if parameter is instance of StereoMode
      */
     public void setFallbackChannelMode(ChannelMode fallbackChannelMode) {
-        if (fallbackChannelMode instanceof StereoMode) throw new IllegalArgumentException("Fallback ChannelMode can't be instance of StereoMode!");
+        if (fallbackChannelMode instanceof StereoMode)
+            throw new IllegalArgumentException("Fallback ChannelMode can't be instance of StereoMode!");
 
         this.fallbackChannelMode = fallbackChannelMode;
     }

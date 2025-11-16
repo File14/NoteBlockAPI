@@ -1,14 +1,18 @@
 package com.xxmicloxx.NoteBlockAPI.songplayer;
 
-import com.xxmicloxx.NoteBlockAPI.NoteBlockAPI;
-import com.xxmicloxx.NoteBlockAPI.event.PlayerRangeStateChangeEvent;
-import com.xxmicloxx.NoteBlockAPI.model.*;
-import org.bukkit.Bukkit;
+import com.xxmicloxx.NoteBlockAPI.model.Layer;
+import com.xxmicloxx.NoteBlockAPI.model.Note;
+import com.xxmicloxx.NoteBlockAPI.model.Playlist;
+import com.xxmicloxx.NoteBlockAPI.model.Song;
+import org.bukkit.Location;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class EntitySongPlayer extends RangeSongPlayer {
 
+    private final Location reusableLocation = new Location(null, 0.0d, 0.0d, 0.0d);
+    private final Location reusableLocation2 = new Location(null, 0.0d, 0.0d, 0.0d);
     private Entity entity;
 
     public EntitySongPlayer(Song song) {
@@ -27,67 +31,57 @@ public class EntitySongPlayer extends RangeSongPlayer {
         super(playlist);
     }
 
-    /**
-     * Returns true if the Player is able to hear the current {@link EntitySongPlayer}
-     * @param player in range
-     * @return ability to hear the current {@link EntitySongPlayer}
-     */
     @Override
-    public boolean isInRange(Player player) {
-        return player.getLocation().distance(entity.getLocation()) <= getDistance();
-    }
-
-    /**
-     * Set entity associated with this {@link EntitySongPlayer}
-     * @param entity
-     */
-    public void setEntity(Entity entity){
-        this.entity = entity;
-    }
-
-    /**
-     * Get {@link Entity} associated with this {@link EntitySongPlayer}
-     * @return
-     */
-    public Entity getEntity() {
-        return entity;
-    }
-
-    @Override
-    public void playTick(Player player, int tick) {
-        if (entity.isDead()){
-            if (autoDestroy){
+    public void playTick(Player player) {
+        if (entity.isDead()) {
+            if (autoDestroy) {
                 destroy();
             } else {
                 setPlaying(false);
             }
         }
-        if (!player.getWorld().getName().equals(entity.getWorld().getName())) {
-            return; // not in same world
+        if (!isInRange(player)) {
+            return;
         }
-
-        byte playerVolume = NoteBlockAPI.getPlayerVolume(player);
 
         for (Layer layer : song.getLayerHashMap().values()) {
             Note note = layer.getNote(tick);
-            if (note == null) continue;
 
-            float volume = ((layer.getVolume() * (int) this.volume * (int) playerVolume * note.getVelocity()) / 100_00_00_00F)
-                    * ((1F / 16F) * getDistance());
-
-            channelMode.play(player, entity.getLocation(), song, layer, note, soundCategory, volume, !enable10Octave);
-
-            if (isInRange(player)) {
-                if (!playerList.get(player.getUniqueId())) {
-                    playerList.put(player.getUniqueId(), true);
-                    Bukkit.getPluginManager().callEvent(new PlayerRangeStateChangeEvent(this, player, true));
-                }
-            } else {
-                if (playerList.get(player.getUniqueId())) {
-                    playerList.put(player.getUniqueId(), false);
-                    Bukkit.getPluginManager().callEvent(new PlayerRangeStateChangeEvent(this, player, false));
-                }
+            if (note == null) {
+                continue;
             }
+            float volume = (layer.getVolume() * this.volume * note.getVelocity() / 1_000_000F) * ((1F / 16F) * getDistance());
+            channelMode.play(player, entity.getLocation(), song, layer, note, soundCategory, volume, !enable10Octave);
         }
+    }
+
+    /**
+     * Returns true if the Player is able to hear the current {@link EntitySongPlayer}
+     *
+     * @param player in range
+     * @return ability to hear the current {@link EntitySongPlayer}
+     */
+    @Override
+    public boolean isInRange(Player player) {
+        return player.getWorld().equals(entity.getWorld()) &&
+                player.getLocation(reusableLocation).distanceSquared(entity.getLocation(reusableLocation2)) <= getDistanceSquared();
+    }
+
+    /**
+     * Set entity associated with this {@link EntitySongPlayer}
+     *
+     * @param entity
+     */
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
+
+    /**
+     * Get {@link Entity} associated with this {@link EntitySongPlayer}
+     *
+     * @return
+     */
+    public Entity getEntity() {
+        return entity;
     }
 }
