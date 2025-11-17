@@ -7,13 +7,12 @@ import org.bukkit.event.HandlerList;
 
 /**
  * Called when a Song ends
- * or when no players are listening and auto destroy is enabled
  *
  * @see SongPlayer
  */
 public class SongEndEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLERS = new HandlerList();
     private final SongPlayer song;
 
     public SongEndEvent(SongPlayer song) {
@@ -21,7 +20,7 @@ public class SongEndEvent extends Event {
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLERS;
     }
 
     /**
@@ -34,6 +33,6 @@ public class SongEndEvent extends Event {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
+        return HANDLERS;
     }
 }

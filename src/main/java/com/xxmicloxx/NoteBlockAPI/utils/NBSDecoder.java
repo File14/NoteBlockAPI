@@ -8,10 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Utils for reading Note Block Studio data
@@ -198,16 +195,9 @@ public class NBSDecoder {
         return null;
     }
 
-    /**
-     * Sets a note at a tick in a song
-     *
-     * @param layerIndex
-     * @param ticks
-     * @param note
-     * @param layerHashMap
-     */
-    private static void setNote(int layerIndex, int ticks, Note note, HashMap<Integer, Layer> layerHashMap) {
+    private static void setNote(int layerIndex, int ticks, Note note, Map<Integer, Layer> layerHashMap) {
         Layer layer = layerHashMap.get(layerIndex);
+
         if (layer == null) {
             layer = new Layer();
             layerHashMap.put(layerIndex, layer);
@@ -237,6 +227,7 @@ public class NBSDecoder {
 
         for (; length > 0; --length) {
             char c = (char) dataInputStream.readByte();
+
             if (c == (char) 0x0D) {
                 c = ' ';
             }

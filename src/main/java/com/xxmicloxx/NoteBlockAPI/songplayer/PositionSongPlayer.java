@@ -37,13 +37,16 @@ public class PositionSongPlayer extends RangeSongPlayer {
         if (!isInRange(player)) {
             return;
         }
+        float distanceFactor = VOLUME_SCALE * getDistance();
+        float baseVolume = this.volume * distanceFactor;
+
         for (Layer layer : song.getLayerHashMap().values()) {
             Note note = layer.getNote(tick);
 
             if (note == null) {
                 continue;
             }
-            float volume = (layer.getVolume() * this.volume * note.getVelocity() / 1_000_000F) * ((1F / 16F) * getDistance());
+            float volume = (layer.getVolume() * note.getVelocity() * baseVolume) / 1_000_000F;
             channelMode.play(player, targetLocation, song, layer, note, soundCategory, volume, !enable10Octave);
         }
     }

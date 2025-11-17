@@ -7,8 +7,6 @@ public class NoteBlockAPI {
     private static NoteBlockAPI instance;
     private final Plugin plugin;
 
-    private boolean disabling = false;
-
     private NoteBlockAPI(Plugin plugin) {
         this.plugin = plugin;
         instance = this;
@@ -22,13 +20,7 @@ public class NoteBlockAPI {
     }
 
     public void shutdown() {
-        disabling = true;
-    }
-
-    public void doSync(Runnable runnable) {
-        if (!disabling) {
-            plugin.getServer().getScheduler().runTask(plugin, runnable);
-        }
+        instance = null;
     }
 
     public static NoteBlockAPI getAPI() {
@@ -37,9 +29,5 @@ public class NoteBlockAPI {
 
     public Plugin getPlugin() {
         return plugin;
-    }
-
-    public boolean isDisabling() {
-        return disabling;
     }
 }

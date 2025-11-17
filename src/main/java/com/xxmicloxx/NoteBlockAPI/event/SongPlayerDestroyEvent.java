@@ -1,7 +1,6 @@
 package com.xxmicloxx.NoteBlockAPI.event;
 
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -10,18 +9,17 @@ import org.bukkit.event.HandlerList;
  *
  * @see SongPlayer
  */
-public class SongDestroyingEvent extends Event implements Cancellable {
+public class SongPlayerDestroyEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLERS = new HandlerList();
     private final SongPlayer song;
-    private boolean cancelled = false;
 
-    public SongDestroyingEvent(SongPlayer song) {
+    public SongPlayerDestroyEvent(SongPlayer song) {
         this.song = song;
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLERS;
     }
 
     /**
@@ -34,16 +32,6 @@ public class SongDestroyingEvent extends Event implements Cancellable {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+        return HANDLERS;
     }
 }

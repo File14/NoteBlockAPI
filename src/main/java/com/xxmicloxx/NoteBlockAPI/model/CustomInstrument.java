@@ -1,15 +1,16 @@
 package com.xxmicloxx.NoteBlockAPI.model;
 
+import org.bukkit.Sound;
+
 /**
  * Create custom instruments from a sound file
- *
  */
 public class CustomInstrument {
 
     private final byte index;
     private final String name;
     private final String soundFileName;
-    private org.bukkit.Sound sound;
+    private Sound sound;
 
     /**
      * Creates a CustomInstrument
@@ -24,7 +25,7 @@ public class CustomInstrument {
         this.soundFileName = soundFileName.replaceAll(".ogg", "");
 
         if (this.soundFileName.equalsIgnoreCase("pling") || this.soundFileName.equalsIgnoreCase("block.note_block.pling")) {
-            this.sound = Sound.NOTE_PLING.bukkitSound();
+            this.sound = Sound.BLOCK_NOTE_BLOCK_PLING;
         }
     }
 
@@ -60,7 +61,7 @@ public class CustomInstrument {
      *
      * @return org.bukkit.Sound enum
      */
-    public org.bukkit.Sound getSound() {
+    public Sound getSound() {
         return sound;
     }
 }

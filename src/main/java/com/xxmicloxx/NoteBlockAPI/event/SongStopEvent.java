@@ -9,17 +9,17 @@ import org.bukkit.event.HandlerList;
  *
  * @see SongPlayer
  */
-public class SongStoppedEvent extends Event {
+public class SongStopEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLERS = new HandlerList();
     private final SongPlayer songPlayer;
 
-    public SongStoppedEvent(SongPlayer songPlayer) {
+    public SongStopEvent(SongPlayer songPlayer) {
         this.songPlayer = songPlayer;
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLERS;
     }
 
     /**
@@ -32,7 +32,6 @@ public class SongStoppedEvent extends Event {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
+        return HANDLERS;
     }
-
 }

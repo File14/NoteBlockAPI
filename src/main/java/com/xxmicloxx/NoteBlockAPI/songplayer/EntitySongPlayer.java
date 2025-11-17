@@ -43,6 +43,8 @@ public class EntitySongPlayer extends RangeSongPlayer {
         if (!isInRange(player)) {
             return;
         }
+        float distanceFactor = VOLUME_SCALE * getDistance();
+        float baseVolume = this.volume * distanceFactor;
 
         for (Layer layer : song.getLayerHashMap().values()) {
             Note note = layer.getNote(tick);
@@ -50,8 +52,8 @@ public class EntitySongPlayer extends RangeSongPlayer {
             if (note == null) {
                 continue;
             }
-            float volume = (layer.getVolume() * this.volume * note.getVelocity() / 1_000_000F) * ((1F / 16F) * getDistance());
-            channelMode.play(player, entity.getLocation(), song, layer, note, soundCategory, volume, !enable10Octave);
+            float volume = (layer.getVolume() * note.getVelocity() * baseVolume) / 1_000_000F;
+            channelMode.play(player, entity.getLocation(reusableLocation2), song, layer, note, soundCategory, volume, !enable10Octave);
         }
     }
 

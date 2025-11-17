@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
  */
 public abstract class RangeSongPlayer extends SongPlayer {
 
+    protected static final float VOLUME_SCALE = 1F / 16F;
+
     private int distance = 16;
     private int distanceSquared = distance * distance;
 

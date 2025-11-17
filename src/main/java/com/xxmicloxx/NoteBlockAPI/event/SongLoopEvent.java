@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 
 public class SongLoopEvent extends Event implements Cancellable {
 
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLERS = new HandlerList();
     private final SongPlayer song;
     private boolean cancelled;
 
@@ -17,7 +17,7 @@ public class SongLoopEvent extends Event implements Cancellable {
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLERS;
     }
 
     /**
@@ -30,7 +30,7 @@ public class SongLoopEvent extends Event implements Cancellable {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
+        return HANDLERS;
     }
 
     @Override

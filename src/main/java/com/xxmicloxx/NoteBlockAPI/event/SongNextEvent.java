@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 
 public class SongNextEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLERS = new HandlerList();
     private final SongPlayer song;
 
     public SongNextEvent(SongPlayer song) {
@@ -14,7 +14,7 @@ public class SongNextEvent extends Event {
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLERS;
     }
 
     /**
@@ -27,6 +27,6 @@ public class SongNextEvent extends Event {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
+        return HANDLERS;
     }
 }
